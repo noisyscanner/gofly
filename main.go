@@ -55,7 +55,7 @@ func main() {
 		}
 
 		if err == nil {
-			err = exec.Command("tar", "-cvzf", filename + ".gz", filename).Run()
+			err = exec.Command("bash", "-c", "gzip " + filename + " -c > " + filename + ".gz").Run()
 		}
 
 		if err != nil {
