@@ -7,8 +7,36 @@ import (
 	"fmt"
 )
 
-
 type RealLanguageService struct{}
+
+func (s *RealLanguageService) GetVerbsOnly(code string) (int, VerbContainer, error) {
+	db, err := sql.Open("mysql", "root:ufx366@tcp(localhost:3306)/reed.brad_iVerbs")
+	if err != nil {
+		return 0, VerbContainer{}, err
+	}
+
+	rows, err := db.Query("SELECT id FROM languages WHERE code = ?", code)
+	if err != nil {
+		return 0, VerbContainer{}, err
+	}
+
+	defer rows.Close()
+
+	id := 0
+
+	for rows.Next() {
+		if err := rows.Scan(&id); err != nil {
+			return 0, VerbContainer{}, err
+		}
+	}
+
+	verbs, err := s.getVerbsAndConjugations(db, id)
+	if err != nil {
+		return id, VerbContainer{}, err
+	}
+
+	return id, VerbContainer{Data: verbs}, nil
+}
 
 func (s *RealLanguageService) GetLang(code string) (Language, error) {
 	language := Language{}
@@ -68,21 +96,9 @@ GROUP BY l.id`, code)
 	}
 	language.Pronouns = struct{Data []Pronoun}{Data: pronouns}
 
-	// Fetch verbs
-	verbs, err := s.getVerbs(db, language.Id)
+	verbs, err := s.getVerbsAndConjugations(db, language.Id)
 	if err != nil {
-		return language,err
-	}
-
-	for i := range verbs {
-		verb := verbs[i]
-		conjs, err := s.getConjugations(db, verb.Id)
-		if err != nil {
-			return language, err
-		} else {
-			verbs[i].Conjugations = struct{Data []Conjugation}{Data: conjs}
-			//fmt.Printf("************* %d conjs for %d *********", len(verb.Conjugations.Data), verb.Id)
-		}
+		return language, err
 	}
 	language.Verbs = struct{Data []Verb}{Data: verbs}
 
@@ -194,4 +210,22 @@ func (s *RealLanguageService) getConjugations(db *sql.DB, verbId int) ([]Conjuga
 	}
 
 	return conjs, nil
+}
+
+func (s *RealLanguageService) getVerbsAndConjugations(db *sql.DB, langId int) ([]Verb, error) {
+	verbs, err := s.getVerbs(db, langId)
+	if err != nil {
+		return []Verb{},err
+	}
+
+	for i := range verbs {
+		verb := verbs[i]
+		conjs, err := s.getConjugations(db, verb.Id)
+		if err != nil {
+			return []Verb{}, err
+		} else {
+			verbs[i].Conjugations = struct{Data []Conjugation}{Data: conjs}
+		}
+	}
+	return verbs, nil
 }

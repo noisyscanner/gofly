@@ -17,7 +17,106 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo(in *jlexer.Lexer, out *Verb) {
+func easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly(in *jlexer.Lexer, out *VerbContainer) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "data":
+			if in.IsNull() {
+				in.Skip()
+				out.Data = nil
+			} else {
+				in.Delim('[')
+				if out.Data == nil {
+					if !in.IsDelim(']') {
+						out.Data = make([]Verb, 0, 1)
+					} else {
+						out.Data = []Verb{}
+					}
+				} else {
+					out.Data = (out.Data)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v1 Verb
+					(v1).UnmarshalEasyJSON(in)
+					out.Data = append(out.Data, v1)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly(out *jwriter.Writer, in VerbContainer) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"data\":")
+	if in.Data == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v2, v3 := range in.Data {
+			if v2 > 0 {
+				out.RawByte(',')
+			}
+			(v3).MarshalEasyJSON(out)
+		}
+		out.RawByte(']')
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v VerbContainer) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v VerbContainer) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *VerbContainer) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *VerbContainer) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly(l, v)
+}
+func easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly1(in *jlexer.Lexer, out *Verb) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -38,17 +137,17 @@ func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo(in *jlexer.Lexer, out *
 		switch key {
 		case "id":
 			out.Id = int(in.Int())
-		case "infinitive":
+		case "i":
 			out.Infinitive = string(in.String())
-		case "normalisedInfinitive":
+		case "ni":
 			out.NormalisedInfinitive = string(in.String())
-		case "english":
+		case "e":
 			out.English = string(in.String())
-		case "helperID":
+		case "hid":
 			out.HelperID = int(in.Int())
-		case "isHelper":
+		case "ih":
 			out.IsHelper = bool(in.Bool())
-		case "isReflexive":
+		case "ir":
 			out.IsReflexive = bool(in.Bool())
 		case "conjugations":
 			easyjsonD2b7633eDecode(in, &out.Conjugations)
@@ -62,7 +161,7 @@ func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo(in *jlexer.Lexer, out *
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo(out *jwriter.Writer, in Verb) {
+func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly1(out *jwriter.Writer, in Verb) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -76,37 +175,37 @@ func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo(out *jwriter.Writer, in
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"infinitive\":")
+	out.RawString("\"i\":")
 	out.String(string(in.Infinitive))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"normalisedInfinitive\":")
+	out.RawString("\"ni\":")
 	out.String(string(in.NormalisedInfinitive))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"english\":")
+	out.RawString("\"e\":")
 	out.String(string(in.English))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"helperID\":")
+	out.RawString("\"hid\":")
 	out.Int(int(in.HelperID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"isHelper\":")
+	out.RawString("\"ih\":")
 	out.Bool(bool(in.IsHelper))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"isReflexive\":")
+	out.RawString("\"ir\":")
 	out.Bool(bool(in.IsReflexive))
 	if !first {
 		out.RawByte(',')
@@ -120,25 +219,25 @@ func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo(out *jwriter.Writer, in
 // MarshalJSON supports json.Marshaler interface
 func (v Verb) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo(&w, v)
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Verb) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo(w, v)
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Verb) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo(&r, v)
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Verb) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo(l, v)
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly1(l, v)
 }
 func easyjsonD2b7633eDecode(in *jlexer.Lexer, out *struct{ Data []Conjugation }) {
 	isTopLevel := in.IsStart()
@@ -175,9 +274,9 @@ func easyjsonD2b7633eDecode(in *jlexer.Lexer, out *struct{ Data []Conjugation })
 					out.Data = (out.Data)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v1 Conjugation
-					(v1).UnmarshalEasyJSON(in)
-					out.Data = append(out.Data, v1)
+					var v4 Conjugation
+					(v4).UnmarshalEasyJSON(in)
+					out.Data = append(out.Data, v4)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -205,17 +304,17 @@ func easyjsonD2b7633eEncode(out *jwriter.Writer, in struct{ Data []Conjugation }
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v2, v3 := range in.Data {
-			if v2 > 0 {
+		for v5, v6 := range in.Data {
+			if v5 > 0 {
 				out.RawByte(',')
 			}
-			(v3).MarshalEasyJSON(out)
+			(v6).MarshalEasyJSON(out)
 		}
 		out.RawByte(']')
 	}
 	out.RawByte('}')
 }
-func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo1(in *jlexer.Lexer, out *Tense) {
+func easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly2(in *jlexer.Lexer, out *Tense) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -252,7 +351,7 @@ func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo1(in *jlexer.Lexer, out 
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo1(out *jwriter.Writer, in Tense) {
+func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly2(out *jwriter.Writer, in Tense) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -286,27 +385,27 @@ func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo1(out *jwriter.Writer, i
 // MarshalJSON supports json.Marshaler interface
 func (v Tense) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo1(&w, v)
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly2(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Tense) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo1(w, v)
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly2(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Tense) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo1(&r, v)
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly2(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Tense) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo1(l, v)
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly2(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo2(in *jlexer.Lexer, out *Pronoun) {
+func easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly3(in *jlexer.Lexer, out *Pronoun) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -345,7 +444,7 @@ func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo2(in *jlexer.Lexer, out 
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo2(out *jwriter.Writer, in Pronoun) {
+func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly3(out *jwriter.Writer, in Pronoun) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -385,27 +484,27 @@ func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo2(out *jwriter.Writer, i
 // MarshalJSON supports json.Marshaler interface
 func (v Pronoun) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo2(&w, v)
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly3(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Pronoun) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo2(w, v)
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly3(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Pronoun) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo2(&r, v)
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly3(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Pronoun) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo2(l, v)
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly3(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo3(in *jlexer.Lexer, out *Language) {
+func easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly4(in *jlexer.Lexer, out *Language) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -456,7 +555,7 @@ func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo3(in *jlexer.Lexer, out 
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo3(out *jwriter.Writer, in Language) {
+func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly4(out *jwriter.Writer, in Language) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -532,25 +631,25 @@ func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo3(out *jwriter.Writer, i
 // MarshalJSON supports json.Marshaler interface
 func (v Language) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo3(&w, v)
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly4(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Language) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo3(w, v)
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly4(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Language) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo3(&r, v)
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly4(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Language) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo3(l, v)
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly4(l, v)
 }
 func easyjsonD2b7633eDecode3(in *jlexer.Lexer, out *struct{ Data []Verb }) {
 	isTopLevel := in.IsStart()
@@ -587,9 +686,9 @@ func easyjsonD2b7633eDecode3(in *jlexer.Lexer, out *struct{ Data []Verb }) {
 					out.Data = (out.Data)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v4 Verb
-					(v4).UnmarshalEasyJSON(in)
-					out.Data = append(out.Data, v4)
+					var v7 Verb
+					(v7).UnmarshalEasyJSON(in)
+					out.Data = append(out.Data, v7)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -617,11 +716,11 @@ func easyjsonD2b7633eEncode3(out *jwriter.Writer, in struct{ Data []Verb }) {
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v5, v6 := range in.Data {
-			if v5 > 0 {
+		for v8, v9 := range in.Data {
+			if v8 > 0 {
 				out.RawByte(',')
 			}
-			(v6).MarshalEasyJSON(out)
+			(v9).MarshalEasyJSON(out)
 		}
 		out.RawByte(']')
 	}
@@ -662,9 +761,9 @@ func easyjsonD2b7633eDecode2(in *jlexer.Lexer, out *struct{ Data []Pronoun }) {
 					out.Data = (out.Data)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v7 Pronoun
-					(v7).UnmarshalEasyJSON(in)
-					out.Data = append(out.Data, v7)
+					var v10 Pronoun
+					(v10).UnmarshalEasyJSON(in)
+					out.Data = append(out.Data, v10)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -692,11 +791,11 @@ func easyjsonD2b7633eEncode2(out *jwriter.Writer, in struct{ Data []Pronoun }) {
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v8, v9 := range in.Data {
-			if v8 > 0 {
+		for v11, v12 := range in.Data {
+			if v11 > 0 {
 				out.RawByte(',')
 			}
-			(v9).MarshalEasyJSON(out)
+			(v12).MarshalEasyJSON(out)
 		}
 		out.RawByte(']')
 	}
@@ -737,9 +836,9 @@ func easyjsonD2b7633eDecode1(in *jlexer.Lexer, out *struct{ Data []Tense }) {
 					out.Data = (out.Data)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v10 Tense
-					(v10).UnmarshalEasyJSON(in)
-					out.Data = append(out.Data, v10)
+					var v13 Tense
+					(v13).UnmarshalEasyJSON(in)
+					out.Data = append(out.Data, v13)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -767,17 +866,17 @@ func easyjsonD2b7633eEncode1(out *jwriter.Writer, in struct{ Data []Tense }) {
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v11, v12 := range in.Data {
-			if v11 > 0 {
+		for v14, v15 := range in.Data {
+			if v14 > 0 {
 				out.RawByte(',')
 			}
-			(v12).MarshalEasyJSON(out)
+			(v15).MarshalEasyJSON(out)
 		}
 		out.RawByte(']')
 	}
 	out.RawByte('}')
 }
-func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo4(in *jlexer.Lexer, out *Conjugation) {
+func easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly5(in *jlexer.Lexer, out *Conjugation) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -796,13 +895,13 @@ func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo4(in *jlexer.Lexer, out 
 			continue
 		}
 		switch key {
-		case "conjugation":
+		case "c":
 			out.Conjugation = string(in.String())
-		case "normalisedConjugation":
+		case "nc":
 			out.NormalisedConjugation = string(in.String())
-		case "tenseID":
+		case "tid":
 			out.TenseID = int(in.Int())
-		case "pronounID":
+		case "pid":
 			out.PronounID = int(in.Int())
 		default:
 			in.SkipRecursive()
@@ -814,7 +913,7 @@ func easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo4(in *jlexer.Lexer, out 
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo4(out *jwriter.Writer, in Conjugation) {
+func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly5(out *jwriter.Writer, in Conjugation) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -822,25 +921,25 @@ func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo4(out *jwriter.Writer, i
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"conjugation\":")
+	out.RawString("\"c\":")
 	out.String(string(in.Conjugation))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"normalisedConjugation\":")
+	out.RawString("\"nc\":")
 	out.String(string(in.NormalisedConjugation))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"tenseID\":")
+	out.RawString("\"tid\":")
 	out.Int(int(in.TenseID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"pronounID\":")
+	out.RawString("\"pid\":")
 	out.Int(int(in.PronounID))
 	out.RawByte('}')
 }
@@ -848,23 +947,23 @@ func easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo4(out *jwriter.Writer, i
 // MarshalJSON supports json.Marshaler interface
 func (v Conjugation) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo4(&w, v)
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly5(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Conjugation) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComNoisyscannerIverbsGo4(w, v)
+	easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly5(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Conjugation) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo4(&r, v)
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly5(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Conjugation) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComNoisyscannerIverbsGo4(l, v)
+	easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly5(l, v)
 }

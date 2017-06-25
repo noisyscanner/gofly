@@ -21,10 +21,6 @@ type Language struct {
 	}
 }
 
-func (l *Language) Data() (struct{Data Language}) {
-	return struct{Data Language}{Data: *l}
-}
-
 type Tense struct {
 	Id int
 	Identifier string
@@ -41,21 +37,25 @@ type Pronoun struct {
 }
 
 type Verb struct {
-	Id int
-	Infinitive string
-	NormalisedInfinitive string
-	English string
-	HelperID int
-	IsHelper bool
-	IsReflexive bool
+	Id					 int	`json:"id"`
+	Infinitive			 string	`json:"i"`
+	NormalisedInfinitive string	`json:"ni"`
+	English 		     string `json:"e"`
+	HelperID 		     int    `json:"hid"`
+	IsHelper 		     bool   `json:"ih"`
+	IsReflexive 		 bool   `json:"ir"`
 	Conjugations struct {
 		Data []Conjugation
 	}
 }
 
 type Conjugation struct {
-	Conjugation string
-	NormalisedConjugation string
-	TenseID int
-	PronounID int
+	Conjugation 		    string	`json:"c"`
+	NormalisedConjugation	string	`json:"nc"`
+	TenseID 			    int		`json:"tid"`
+	PronounID 			    int		`json:"pid"`
+}
+
+type VerbContainer struct {
+	Data []Verb
 }

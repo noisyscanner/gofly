@@ -2,27 +2,54 @@ package main
 
 import (
 	"fmt"
-	"os"
+	"flag"
+	"io/ioutil"
+	"os/exec"
+	"strconv"
 )
 
 func main() {
 
-	args := os.Args
-	if len(args) < 2 {
+	code := flag.String("code", "", "The language to do")
+	fullPtr := flag.Bool("full", false, "Output the full language: verbs, tenses and pronouns")
+
+	flag.Parse()
+
+	if *code == "" {
 		fmt.Println("Please specify a language code.")
 	} else {
 		service := RealLanguageService{}
-		lang, err := service.GetLang(args[1])
-		if err != nil {
-			fmt.Println(err)
-			return
+
+		var (
+			output []byte
+			filename string
+			err error
+		)
+
+		if *fullPtr {
+			lang, err := service.GetLang(*code)
+			if err == nil {
+				output, err = lang.MarshalJSON()
+			}
+			filename =  strconv.Itoa(lang.Id) + lang.Code + ".json.full"
+		} else {
+			langID, verbConf, err := service.GetVerbsOnly(*code)
+			if err == nil {
+				output, err = verbConf.MarshalJSON()
+			}
+			filename =  strconv.Itoa(langID) + *code + ".json"
 		}
 
-		output, err := lang.MarshalJSON()
+		if err == nil {
+			err = ioutil.WriteFile(filename, output, 0644)
+		}
+
+		if err == nil {
+			err = exec.Command("tar", "-cvzf", filename + ".gz ", filename).Run()
+		}
+
 		if err != nil {
 			fmt.Println(err)
-		} else {
-			fmt.Println(string(output))
 		}
 	}
 }
