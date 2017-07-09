@@ -7,15 +7,31 @@ import (
 	"fmt"
 )
 
-type RealLanguageService struct{}
+type RealLanguageService struct{
+	db *sql.DB
+	configService ConfigService
+	config *DBConfig
+}
+
+func (s *RealLanguageService) DB() *sql.DB {
+	if s.db == nil {
+		if s.config == nil {
+			if s.configService == nil {
+				s.configService = &(FileConfigService{File: "config"})
+			}
+			s.config = s.configService.GetConfig()
+		}
+		db, err := sql.Open(s.config.Driver, s.config.DBString())
+		if err != nil {
+			panic(err)
+		}
+		s.db = db
+	}
+	return s.db
+}
 
 func (s *RealLanguageService) GetVerbsOnly(code string) (int, VerbContainer, error) {
-	db, err := sql.Open("mysql", "root:ufx366@tcp(localhost:3306)/reed.brad_iVerbs")
-	if err != nil {
-		return 0, VerbContainer{}, err
-	}
-
-	rows, err := db.Query("SELECT id FROM languages WHERE code = ?", code)
+	rows, err := s.DB().Query("SELECT id FROM languages WHERE code = ?", code)
 	if err != nil {
 		return 0, VerbContainer{}, err
 	}
@@ -30,7 +46,7 @@ func (s *RealLanguageService) GetVerbsOnly(code string) (int, VerbContainer, err
 		}
 	}
 
-	verbs, err := s.getVerbsAndConjugations(db, id)
+	verbs, err := s.getVerbsAndConjugations(id)
 	if err != nil {
 		return id, VerbContainer{}, err
 	}
@@ -41,12 +57,7 @@ func (s *RealLanguageService) GetVerbsOnly(code string) (int, VerbContainer, err
 func (s *RealLanguageService) GetLang(code string) (Language, error) {
 	language := Language{}
 
-	db, err := sql.Open("mysql", "root:ufx366@tcp(localhost:3306)/reed.brad_iVerbs")
-	if err != nil {
-		return language, err
-	}
-
-	rows, err := db.Query(`
+	rows, err := s.DB().Query(`
 SELECT l.id, l.lang, l.` + "`code`" + `, l.locale, UNIX_TIMESTAMP(max(v.updated_at)) version, UNIX_TIMESTAMP(GREATEST(max(t.updated_at), max(p.updated_at))) schemaVersion, hasReflexives, hasHelpers
 FROM languages l, verbs v, tenses t, pronouns p
 WHERE ` + "`code`" + ` = ?
@@ -84,19 +95,19 @@ GROUP BY l.id`, code)
 	}
 
 	// Fetch schema
-	tenses, err := s.getTenses(db, language.Id)
+	tenses, err := s.getTenses(language.Id)
 	if err != nil {
 		return language, err
 	}
 	language.Tenses = struct{Data []Tense}{Data: tenses}
 
-	pronouns, err := s.getPronouns(db, language.Id)
+	pronouns, err := s.getPronouns(language.Id)
 	if err != nil {
 		return language, err
 	}
 	language.Pronouns = struct{Data []Pronoun}{Data: pronouns}
 
-	verbs, err := s.getVerbsAndConjugations(db, language.Id)
+	verbs, err := s.getVerbsAndConjugations(language.Id)
 	if err != nil {
 		return language, err
 	}
@@ -105,10 +116,10 @@ GROUP BY l.id`, code)
 	return language, nil
 }
 
-func (s *RealLanguageService) getTenses(db *sql.DB, langId int) ([]Tense, error) {
+func (s *RealLanguageService) getTenses(langId int) ([]Tense, error) {
 	tenses := []Tense{}
 
-	rows, err := db.Query("SELECT id, identifier, displayName, `order` FROM tenses WHERE lang_id = ?", langId)
+	rows, err := s.DB().Query("SELECT id, identifier, displayName, `order` FROM tenses WHERE lang_id = ?", langId)
 	if err != nil {
 		return tenses, err
 	}
@@ -127,10 +138,10 @@ func (s *RealLanguageService) getTenses(db *sql.DB, langId int) ([]Tense, error)
 	return tenses, nil
 }
 
-func (s *RealLanguageService) getPronouns(db *sql.DB, langId int) ([]Pronoun, error) {
+func (s *RealLanguageService) getPronouns(langId int) ([]Pronoun, error) {
 	pronouns := []Pronoun{}
 
-	rows, err := db.Query("SELECT id, identifier, displayName, `order`, reflexive FROM pronouns WHERE lang_id = ?", langId)
+	rows, err := s.DB().Query("SELECT id, identifier, displayName, `order`, reflexive FROM pronouns WHERE lang_id = ?", langId)
 	if err != nil {
 		return pronouns, err
 	}
@@ -154,10 +165,10 @@ func (s *RealLanguageService) getPronouns(db *sql.DB, langId int) ([]Pronoun, er
 	return pronouns, nil
 }
 
-func (s *RealLanguageService) getVerbs(db *sql.DB, langId int) ([]Verb, error) {
+func (s *RealLanguageService) getVerbs(langId int) ([]Verb, error) {
 	verbs := []Verb{}
 
-	rows, err := db.Query("SELECT id, infinitive, normalisedInfinitive, english, helperID, isHelper, isReflexive FROM verbs WHERE lang_id = ?", langId)
+	rows, err := s.DB().Query("SELECT id, infinitive, normalisedInfinitive, english, helperID, isHelper, isReflexive FROM verbs WHERE lang_id = ?", langId)
 	if err != nil {
 		return verbs, err
 	}
@@ -183,10 +194,10 @@ func (s *RealLanguageService) getVerbs(db *sql.DB, langId int) ([]Verb, error) {
 	return verbs, nil
 }
 
-func (s *RealLanguageService) getConjugations(db *sql.DB, verbId int) ([]Conjugation, error) {
+func (s *RealLanguageService) getConjugations(verbId int) ([]Conjugation, error) {
 	conjs := []Conjugation{}
 
-	rows, err := db.Query("SELECT conjugation, normalisedConjugation, pronoun_id, tense_id FROM conjugations WHERE verb_id = ?", verbId)
+	rows, err := s.DB().Query("SELECT conjugation, normalisedConjugation, pronoun_id, tense_id FROM conjugations WHERE verb_id = ?", verbId)
 	if err != nil {
 		return conjs, err
 	}
@@ -212,15 +223,15 @@ func (s *RealLanguageService) getConjugations(db *sql.DB, verbId int) ([]Conjuga
 	return conjs, nil
 }
 
-func (s *RealLanguageService) getVerbsAndConjugations(db *sql.DB, langId int) ([]Verb, error) {
-	verbs, err := s.getVerbs(db, langId)
+func (s *RealLanguageService) getVerbsAndConjugations(langId int) ([]Verb, error) {
+	verbs, err := s.getVerbs(langId)
 	if err != nil {
 		return []Verb{},err
 	}
 
 	for i := range verbs {
 		verb := verbs[i]
-		conjs, err := s.getConjugations(db, verb.Id)
+		conjs, err := s.getConjugations(verb.Id)
 		if err != nil {
 			return []Verb{}, err
 		} else {

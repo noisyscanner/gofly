@@ -12,6 +12,7 @@ import (
 func main() {
 
 	code := flag.String("code", "", "The language to do")
+	conf := flag.String("conf", "", "DB config file")
 	fullPtr := flag.Bool("full", false, "Output the full language: verbs, tenses and pronouns")
 	outDir := flag.String("out", ".", "Directory to write output to")
 
@@ -20,7 +21,14 @@ func main() {
 	if *code == "" {
 		fmt.Println("Please specify a language code.")
 	} else {
-		service := RealLanguageService{}
+		var service RealLanguageService
+		if *conf != "" {
+			configService := FileConfigService{File: *conf}
+			service = RealLanguageService{configService: configService}
+		} else {
+			service = RealLanguageService{}
+		}
+
 
 		var (
 			output []byte
