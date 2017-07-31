@@ -39,14 +39,12 @@ type Pronoun struct {
 type Verb struct {
 	Id					 int	`json:"id"`
 	Infinitive			 string	`json:"i"`
-	NormalisedInfinitive string	`json:"ni"`
+	NormalisedInfinitive string	`json:"ni,omitempty"`
 	English 		     string `json:"e"`
 	HelperID 		     int    `json:"hid"`
 	IsHelper 		     bool   `json:"ih"`
 	IsReflexive 		 bool   `json:"ir"`
-	Conjugations struct {
-		Data []Conjugation
-	}
+	Conjugations 		 ConjugationContainer `json:"conjugations"`
 }
 
 type Conjugation struct {
@@ -57,5 +55,9 @@ type Conjugation struct {
 }
 
 type VerbContainer struct {
-	Data []Verb
+	Data []Verb `json:"data"`
+}
+
+type ConjugationContainer struct {
+	Data []Conjugation `json:"data"`
 }

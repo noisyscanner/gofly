@@ -30,20 +30,45 @@ func (s *RealLanguageService) DB() *sql.DB {
 	return s.db
 }
 
-func (s *RealLanguageService) GetVerbsOnly(code string) (int, VerbContainer, error) {
+func (s *RealLanguageService) GetLangIdFromCode(code string) (int, error) {
+	var err error
+
 	rows, err := s.DB().Query("SELECT id FROM languages WHERE code = ?", code)
+	defer rows.Close()
+	if err != nil {
+		return 0, err
+	}
+
+	id := 0
+
+	if rows.Next() {
+		err = rows.Scan(&id)
+	} else {
+		// No language found
+		err = fmt.Errorf("Language not found with code '%s'", code)
+	}
+
+	return id, err
+}
+
+func (s *RealLanguageService) GetVerbsSince(code string, since int) (int, VerbContainer, error) {
+	id, err := s.GetLangIdFromCode(code)
 	if err != nil {
 		return 0, VerbContainer{}, err
 	}
 
-	defer rows.Close()
+	verbs, err := s.getVerbsAndConjugationsSince(id, since)
+	if err != nil {
+		return id, VerbContainer{}, err
+	}
 
-	id := 0
+	return id, VerbContainer{Data: verbs}, nil
+}
 
-	for rows.Next() {
-		if err := rows.Scan(&id); err != nil {
-			return 0, VerbContainer{}, err
-		}
+func (s *RealLanguageService) GetVerbsOnly(code string) (int, VerbContainer, error) {
+	id, err := s.GetLangIdFromCode(code)
+	if err != nil {
+		return 0, VerbContainer{}, err
 	}
 
 	verbs, err := s.getVerbsAndConjugations(id)
@@ -71,7 +96,7 @@ GROUP BY l.id`, code)
 
 	defer rows.Close()
 
-	for rows.Next() {
+	if rows.Next() {
 		if err := rows.Scan(
 			&language.Id,
 			&language.Lang,
@@ -81,11 +106,9 @@ GROUP BY l.id`, code)
 			&language.SchemaVersion,
 			&language.HasReflexives,
 			&language.HasHelpers); err != nil {
-			fmt.Print(err)
+			return language, err
 		}
-	}
-
-	if language.Id == 0 {
+	} else {
 		// Language was not found
 		return language, fmt.Errorf("Language not found with code '%s'", code)
 	}
@@ -165,15 +188,8 @@ func (s *RealLanguageService) getPronouns(langId int) ([]Pronoun, error) {
 	return pronouns, nil
 }
 
-func (s *RealLanguageService) getVerbs(langId int) ([]Verb, error) {
+func (s *RealLanguageService) scanVerbs(rows *sql.Rows) ([]Verb, error) {
 	verbs := []Verb{}
-
-	rows, err := s.DB().Query("SELECT id, infinitive, normalisedInfinitive, english, helperID, isHelper, isReflexive FROM verbs WHERE lang_id = ?", langId)
-	if err != nil {
-		return verbs, err
-	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		verb := Verb{}
@@ -192,6 +208,34 @@ func (s *RealLanguageService) getVerbs(langId int) ([]Verb, error) {
 	}
 
 	return verbs, nil
+}
+
+func (s *RealLanguageService) getVerbs(langId int) ([]Verb, error) {
+	rows, err := s.DB().Query("SELECT id, infinitive, normalisedInfinitive, english, helperID, isHelper, isReflexive FROM verbs WHERE lang_id = ?", langId)
+	defer rows.Close()
+	if err != nil {
+		return []Verb{}, err
+	}
+
+	return s.scanVerbs(rows)
+}
+
+func (s *RealLanguageService) getVerbsSince(langId int, since int) ([]Verb, error) {
+	//_, err := s.DB().Exec("SET time_zone='+00:00';")
+	//if err != nil {
+	//	return []Verb{}, err
+	//}
+
+	rows, err := s.DB().Query(
+		"SELECT id, infinitive, normalisedInfinitive, english, helperID, isHelper, isReflexive FROM verbs WHERE lang_id = ? AND UNIX_TIMESTAMP(updated_at) > ?",
+		langId,
+		since)
+	defer rows.Close()
+	if err != nil {
+		return []Verb{}, err
+	}
+
+	return s.scanVerbs(rows)
 }
 
 func (s *RealLanguageService) getConjugations(verbId int) ([]Conjugation, error) {
@@ -235,7 +279,24 @@ func (s *RealLanguageService) getVerbsAndConjugations(langId int) ([]Verb, error
 		if err != nil {
 			return []Verb{}, err
 		} else {
-			verbs[i].Conjugations = struct{Data []Conjugation}{Data: conjs}
+			verbs[i].Conjugations = ConjugationContainer{Data: conjs}
+		}
+	}
+	return verbs, nil
+}
+
+func (s *RealLanguageService) getVerbsAndConjugationsSince(langId int, since int) ([]Verb, error) {
+	verbs, err := s.getVerbsSince(langId, since)
+	if err != nil {
+		return []Verb{},err
+	}
+
+	for i, verb := range verbs {
+		conjs, err := s.getConjugations(verb.Id)
+		if err != nil {
+			return []Verb{}, err
+		} else {
+			verbs[i].Conjugations = ConjugationContainer{Data: conjs}
 		}
 	}
 	return verbs, nil

@@ -80,7 +80,7 @@ func (s *FakeLanguageService) GetLang(code string) Language {
 			IsReflexive: false,
 			IsHelper: false,
 			HelperID: 5,
-			Conjugations: struct{ Data []Conjugation }{Data: conjugations},
+			Conjugations: ConjugationContainer{Data: conjugations},
 		},
 	}
 
