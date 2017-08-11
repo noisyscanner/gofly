@@ -260,13 +260,13 @@ func easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly2(in *jlexer.Lexer, out *Tense
 			continue
 		}
 		switch key {
-		case "Id":
+		case "id":
 			out.Id = int(in.Int())
-		case "Identifier":
+		case "identifier":
 			out.Identifier = string(in.String())
-		case "DisplayName":
+		case "displayName":
 			out.DisplayName = string(in.String())
-		case "Order":
+		case "order":
 			out.Order = int(in.Int())
 		default:
 			in.SkipRecursive()
@@ -286,25 +286,25 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly2(out *jwriter.Writer, in Tens
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Id\":")
+	out.RawString("\"id\":")
 	out.Int(int(in.Id))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Identifier\":")
+	out.RawString("\"identifier\":")
 	out.String(string(in.Identifier))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"DisplayName\":")
+	out.RawString("\"displayName\":")
 	out.String(string(in.DisplayName))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Order\":")
+	out.RawString("\"order\":")
 	out.Int(int(in.Order))
 	out.RawByte('}')
 }
@@ -351,15 +351,15 @@ func easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly3(in *jlexer.Lexer, out *Prono
 			continue
 		}
 		switch key {
-		case "Id":
+		case "id":
 			out.Id = int(in.Int())
-		case "Identifier":
+		case "identifier":
 			out.Identifier = string(in.String())
-		case "DisplayName":
+		case "displayName":
 			out.DisplayName = string(in.String())
-		case "Reflexive":
+		case "reflexive":
 			out.Reflexive = string(in.String())
-		case "Order":
+		case "order":
 			out.Order = int(in.Int())
 		default:
 			in.SkipRecursive()
@@ -379,31 +379,31 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly3(out *jwriter.Writer, in Pron
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Id\":")
+	out.RawString("\"id\":")
 	out.Int(int(in.Id))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Identifier\":")
+	out.RawString("\"identifier\":")
 	out.String(string(in.Identifier))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"DisplayName\":")
+	out.RawString("\"displayName\":")
 	out.String(string(in.DisplayName))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Reflexive\":")
+	out.RawString("\"reflexive\":")
 	out.String(string(in.Reflexive))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Order\":")
+	out.RawString("\"order\":")
 	out.Int(int(in.Order))
 	out.RawByte('}')
 }
@@ -450,27 +450,27 @@ func easyjsonD2b7633eDecodeBradreedCoUkIverbsGofly4(in *jlexer.Lexer, out *Langu
 			continue
 		}
 		switch key {
-		case "Id":
+		case "id":
 			out.Id = int(in.Int())
-		case "Lang":
+		case "lang":
 			out.Lang = string(in.String())
-		case "Code":
+		case "code":
 			out.Code = string(in.String())
-		case "Locale":
+		case "locale":
 			out.Locale = string(in.String())
-		case "Version":
+		case "version":
 			out.Version = int(in.Int())
-		case "SchemaVersion":
+		case "schemaVersion":
 			out.SchemaVersion = int(in.Int())
-		case "HasReflexives":
+		case "hasReflexives":
 			out.HasReflexives = bool(in.Bool())
-		case "HasHelpers":
+		case "hasHelpers":
 			out.HasHelpers = bool(in.Bool())
-		case "Tenses":
+		case "tenses":
 			easyjsonD2b7633eDecode(in, &out.Tenses)
-		case "Pronouns":
+		case "pronouns":
 			easyjsonD2b7633eDecode1(in, &out.Pronouns)
-		case "Verbs":
+		case "verbs":
 			easyjsonD2b7633eDecode2(in, &out.Verbs)
 		default:
 			in.SkipRecursive()
@@ -490,67 +490,67 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly4(out *jwriter.Writer, in Lang
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Id\":")
+	out.RawString("\"id\":")
 	out.Int(int(in.Id))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Lang\":")
+	out.RawString("\"lang\":")
 	out.String(string(in.Lang))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Code\":")
+	out.RawString("\"code\":")
 	out.String(string(in.Code))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Locale\":")
+	out.RawString("\"locale\":")
 	out.String(string(in.Locale))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Version\":")
+	out.RawString("\"version\":")
 	out.Int(int(in.Version))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"SchemaVersion\":")
+	out.RawString("\"schemaVersion\":")
 	out.Int(int(in.SchemaVersion))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"HasReflexives\":")
+	out.RawString("\"hasReflexives\":")
 	out.Bool(bool(in.HasReflexives))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"HasHelpers\":")
+	out.RawString("\"hasHelpers\":")
 	out.Bool(bool(in.HasHelpers))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Tenses\":")
+	out.RawString("\"tenses\":")
 	easyjsonD2b7633eEncode(out, in.Tenses)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Pronouns\":")
+	out.RawString("\"pronouns\":")
 	easyjsonD2b7633eEncode1(out, in.Pronouns)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Verbs\":")
+	out.RawString("\"verbs\":")
 	easyjsonD2b7633eEncode2(out, in.Verbs)
 	out.RawByte('}')
 }
@@ -597,7 +597,7 @@ func easyjsonD2b7633eDecode2(in *jlexer.Lexer, out *struct{ Data []Verb }) {
 			continue
 		}
 		switch key {
-		case "Data":
+		case "data":
 			if in.IsNull() {
 				in.Skip()
 				out.Data = nil
@@ -638,7 +638,7 @@ func easyjsonD2b7633eEncode2(out *jwriter.Writer, in struct{ Data []Verb }) {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Data\":")
+	out.RawString("\"data\":")
 	if in.Data == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 		out.RawString("null")
 	} else {
@@ -672,7 +672,7 @@ func easyjsonD2b7633eDecode1(in *jlexer.Lexer, out *struct{ Data []Pronoun }) {
 			continue
 		}
 		switch key {
-		case "Data":
+		case "data":
 			if in.IsNull() {
 				in.Skip()
 				out.Data = nil
@@ -713,7 +713,7 @@ func easyjsonD2b7633eEncode1(out *jwriter.Writer, in struct{ Data []Pronoun }) {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Data\":")
+	out.RawString("\"data\":")
 	if in.Data == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 		out.RawString("null")
 	} else {
@@ -747,7 +747,7 @@ func easyjsonD2b7633eDecode(in *jlexer.Lexer, out *struct{ Data []Tense }) {
 			continue
 		}
 		switch key {
-		case "Data":
+		case "data":
 			if in.IsNull() {
 				in.Skip()
 				out.Data = nil
@@ -788,7 +788,7 @@ func easyjsonD2b7633eEncode(out *jwriter.Writer, in struct{ Data []Tense }) {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"Data\":")
+	out.RawString("\"data\":")
 	if in.Data == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 		out.RawString("null")
 	} else {
