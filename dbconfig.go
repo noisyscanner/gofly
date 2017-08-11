@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"strings"
 	"strconv"
-	"os"
 )
 
 type DBConfig struct {
