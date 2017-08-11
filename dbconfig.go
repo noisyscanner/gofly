@@ -74,12 +74,10 @@ func (s FileConfigService) parseConfig(c string) (map[string]string, error) {
 	pairs := strings.Split(string(conf), "\n")
 	for _, pair := range pairs {
 		split := strings.Split(pair, " ")
-		if len(split) != 2 {
-			fmt.Printf("%+v was not a valid config item", pair)
-			os.Exit(1)
+		if len(split) == 2 {
+			k, v := split[0], split[1]
+			out[k] = v
 		}
-		k, v := split[0], split[1]
-		out[k] = v
 	}
 
 	return out, nil
