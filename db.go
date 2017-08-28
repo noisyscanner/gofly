@@ -212,10 +212,10 @@ func (s *RealLanguageService) scanVerbs(rows *sql.Rows) ([]Verb, error) {
 
 func (s *RealLanguageService) getVerbs(langId int) ([]Verb, error) {
 	rows, err := s.DB().Query("SELECT id, infinitive, normalisedInfinitive, english, helperID, isHelper, isReflexive FROM verbs WHERE lang_id = ?", langId)
-	defer rows.Close()
 	if err != nil {
 		return []Verb{}, err
 	}
+	defer rows.Close()
 
 	return s.scanVerbs(rows)
 }
@@ -227,13 +227,16 @@ func (s *RealLanguageService) getVerbsSince(langId int, since int) ([]Verb, erro
 	//}
 
 	rows, err := s.DB().Query(
-		"SELECT id, infinitive, normalisedInfinitive, english, helperID, isHelper, isReflexive FROM verbs WHERE lang_id = ? AND UNIX_TIMESTAMP(updated_at) > ?",
+		"SELECT v.id, v.infinitive, v.normalisedInfinitive, v.english, v.helperID, v.isHelper, v.isReflexive FROM verbs AS v, conjugations AS c " +
+			"WHERE v.lang_id = ? " +
+			"AND c.verb_id = v.id " +
+			"AND GREATEST(UNIX_TIMESTAMP(v.updated_at), UNIX_TIMESTAMP(c.updated_at)) > ? ",
 		langId,
 		since)
-	defer rows.Close()
 	if err != nil {
 		return []Verb{}, err
 	}
+	defer rows.Close()
 
 	return s.scanVerbs(rows)
 }
