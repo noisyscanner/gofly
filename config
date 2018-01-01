@@ -1,6 +1,0 @@
-Driver mysql
-Host localhost
-User root
-Pass ufx366
-Port 3306
-Db reed.brad_iVerbs
