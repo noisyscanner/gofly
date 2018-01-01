@@ -87,9 +87,9 @@ func main() {
 			var zippedOutput []byte
 
 			if shouldGzip {
-				// GZIP
 				zippedOutput, err = zipBytes(output)
 			}
+			
 			if shouldWriteFile {
 				err = ioutil.WriteFile(filename, output, 0644)
 
@@ -97,9 +97,7 @@ func main() {
 					err = ioutil.WriteFile(filename + ".gz", zippedOutput, 0644)
 				}
 
-				if err != nil {
-					fmt.Printf("ERROR: %s", err.Error())
-				} else {
+				if err == nil {
 					fmt.Println("SUCCESS: Written " + filename)
 					if shouldGzip {
 						fmt.Println("Written " + filename + ".gz")
@@ -115,5 +113,10 @@ func main() {
 		} else {
 			fmt.Println(err)
 		}
+
+		if err != nil {
+			fmt.Printf("ERROR: %s", err.Error())
+		}
+
 	}
 }
