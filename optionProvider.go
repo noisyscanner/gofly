@@ -9,6 +9,8 @@ type Options struct {
 	Full bool
 	OutDir string
 	ShouldGzip bool
+
+	ImportFile string
 }
 
 func (o *Options) ShouldWriteFile() bool {
@@ -23,6 +25,8 @@ func getOpts() *Options {
 	gzipPtr := flag.Bool("gz", false, "GZIP the output")
 	outDir := flag.String("out", "", "Directory to write output to")
 
+	importFile := flag.String("import", "", "Specify a JSON full file to import")
+
 	flag.Parse()
 
 	return &Options{
@@ -32,5 +36,6 @@ func getOpts() *Options {
 		Full: *fullPtr,
 		OutDir: *outDir,
 		ShouldGzip: *gzipPtr,
+		ImportFile: *importFile,
 	}
 }

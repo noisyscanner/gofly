@@ -7,36 +7,14 @@ import (
 	"fmt"
 )
 
-type RealLanguageService struct{
-	db *sql.DB
-	configService ConfigService
-	config *DBConfig
+type Fetcher struct{
+	Db *sql.DB
 }
 
-func (s *RealLanguageService) DB() *sql.DB {
-	if s.db == nil {
-		if s.config == nil {
-			if s.configService == nil {
-				s.configService = &(FileConfigService{File: "config"})
-			}
-			s.config = s.configService.GetConfig()
-		}
-
-		db, err := sql.Open(s.config.Driver, s.config.DBString())
-
-		if err != nil {
-			panic(err)
-		}
-
-		s.db = db
-	}
-	return s.db
-}
-
-func (s *RealLanguageService) GetLangIdFromCode(code string) (int, error) {
+func (s *Fetcher) GetLangIdFromCode(code string) (int, error) {
 	var err error
 
-	rows, err := s.DB().Query("SELECT id FROM languages WHERE code = ?", code)
+	rows, err := s.Db.Query("SELECT id FROM languages WHERE code = ?", code)
 	defer rows.Close()
 	if err != nil {
 		return 0, err
@@ -53,7 +31,7 @@ func (s *RealLanguageService) GetLangIdFromCode(code string) (int, error) {
 	return id, err
 }
 
-func (s *RealLanguageService) GetVerbsSince(code string, since int) (int, VerbContainer, error) {
+func (s *Fetcher) GetVerbsSince(code string, since int) (int, VerbContainer, error) {
 	id, err := s.GetLangIdFromCode(code)
 	if err != nil {
 		return 0, VerbContainer{}, err
@@ -67,7 +45,7 @@ func (s *RealLanguageService) GetVerbsSince(code string, since int) (int, VerbCo
 	return id, VerbContainer{Data: verbs}, nil
 }
 
-func (s *RealLanguageService) GetVerbsOnly(code string) (int, VerbContainer, error) {
+func (s *Fetcher) GetVerbsOnly(code string) (int, VerbContainer, error) {
 	id, err := s.GetLangIdFromCode(code)
 	if err != nil {
 		return 0, VerbContainer{}, err
@@ -81,10 +59,10 @@ func (s *RealLanguageService) GetVerbsOnly(code string) (int, VerbContainer, err
 	return id, VerbContainer{Data: verbs}, nil
 }
 
-func (s *RealLanguageService) GetLang(code string) (Language, error) {
+func (s *Fetcher) GetLang(code string) (Language, error) {
 	language := Language{}
 
-	rows, err := s.DB().Query(`
+	rows, err := s.Db.Query(`
 SELECT l.id, l.lang, l.` + "`code`" + `, l.locale, UNIX_TIMESTAMP(max(v.updated_at)) version, UNIX_TIMESTAMP(GREATEST(max(t.updated_at), max(p.updated_at))) schemaVersion, hasReflexives, hasHelpers
 FROM languages l, verbs v, tenses t, pronouns p
 WHERE ` + "`code`" + ` = ?
@@ -139,10 +117,10 @@ GROUP BY l.id`, code)
 	return language, nil
 }
 
-func (s *RealLanguageService) getTenses(langId int) ([]Tense, error) {
+func (s *Fetcher) getTenses(langId int) ([]Tense, error) {
 	var tenses []Tense
 
-	rows, err := s.DB().Query("SELECT id, identifier, displayName, `order` FROM tenses WHERE lang_id = ?", langId)
+	rows, err := s.Db.Query("SELECT id, identifier, displayName, `order` FROM tenses WHERE lang_id = ?", langId)
 	if err != nil {
 		return tenses, err
 	}
@@ -161,10 +139,10 @@ func (s *RealLanguageService) getTenses(langId int) ([]Tense, error) {
 	return tenses, nil
 }
 
-func (s *RealLanguageService) getPronouns(langId int) ([]Pronoun, error) {
+func (s *Fetcher) getPronouns(langId int) ([]Pronoun, error) {
 	var pronouns []Pronoun
 
-	rows, err := s.DB().Query("SELECT id, identifier, displayName, `order`, reflexive FROM pronouns WHERE lang_id = ?", langId)
+	rows, err := s.Db.Query("SELECT id, identifier, displayName, `order`, reflexive FROM pronouns WHERE lang_id = ?", langId)
 	if err != nil {
 		return pronouns, err
 	}
@@ -188,7 +166,7 @@ func (s *RealLanguageService) getPronouns(langId int) ([]Pronoun, error) {
 	return pronouns, nil
 }
 
-func (s *RealLanguageService) scanVerbs(rows *sql.Rows) ([]Verb, error) {
+func (s *Fetcher) scanVerbs(rows *sql.Rows) ([]Verb, error) {
 	var verbs []Verb
 
 	for rows.Next() {
@@ -210,8 +188,8 @@ func (s *RealLanguageService) scanVerbs(rows *sql.Rows) ([]Verb, error) {
 	return verbs, nil
 }
 
-func (s *RealLanguageService) getVerbs(langId int) ([]Verb, error) {
-	rows, err := s.DB().Query("SELECT id, infinitive, normalisedInfinitive, english, helperID, isHelper, isReflexive FROM verbs WHERE lang_id = ?", langId)
+func (s *Fetcher) getVerbs(langId int) ([]Verb, error) {
+	rows, err := s.Db.Query("SELECT id, infinitive, normalisedInfinitive, english, helperID, isHelper, isReflexive FROM verbs WHERE lang_id = ?", langId)
 	if err != nil {
 		return []Verb{}, err
 	}
@@ -220,8 +198,8 @@ func (s *RealLanguageService) getVerbs(langId int) ([]Verb, error) {
 	return s.scanVerbs(rows)
 }
 
-func (s *RealLanguageService) getVerbsSince(langId int, since int) ([]Verb, error) {
-	rows, err := s.DB().Query(
+func (s *Fetcher) getVerbsSince(langId int, since int) ([]Verb, error) {
+	rows, err := s.Db.Query(
 		"SELECT v.id, v.infinitive, v.normalisedInfinitive, v.english, v.helperID, v.isHelper, v.isReflexive FROM verbs AS v, conjugations AS c " +
 			"WHERE v.lang_id = ? " +
 			"AND c.verb_id = v.id " +
@@ -236,10 +214,10 @@ func (s *RealLanguageService) getVerbsSince(langId int, since int) ([]Verb, erro
 	return s.scanVerbs(rows)
 }
 
-func (s *RealLanguageService) getConjugations(verbId int) ([]Conjugation, error) {
+func (s *Fetcher) getConjugations(verbId int) ([]Conjugation, error) {
 	var conjs []Conjugation
 
-	rows, err := s.DB().Query("SELECT conjugation, normalisedConjugation, pronoun_id, tense_id FROM conjugations WHERE verb_id = ?", verbId)
+	rows, err := s.Db.Query("SELECT conjugation, normalisedConjugation, pronoun_id, tense_id FROM conjugations WHERE verb_id = ?", verbId)
 	if err != nil {
 		return conjs, err
 	}
@@ -264,7 +242,7 @@ func (s *RealLanguageService) getConjugations(verbId int) ([]Conjugation, error)
 	return conjs, err
 }
 
-func (s *RealLanguageService) getVerbsAndConjugations(langId int) ([]Verb, error) {
+func (s *Fetcher) getVerbsAndConjugations(langId int) ([]Verb, error) {
 	verbs, err := s.getVerbs(langId)
 	if err != nil {
 		return []Verb{},err
@@ -283,7 +261,7 @@ func (s *RealLanguageService) getVerbsAndConjugations(langId int) ([]Verb, error
 	return verbs, nil
 }
 
-func (s *RealLanguageService) getVerbsAndConjugationsSince(langId int, since int) ([]Verb, error) {
+func (s *Fetcher) getVerbsAndConjugationsSince(langId int, since int) ([]Verb, error) {
 	verbs, err := s.getVerbsSince(langId, since)
 	if err != nil {
 		return []Verb{},err

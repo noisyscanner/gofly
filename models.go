@@ -55,9 +55,9 @@ type Conjugation struct {
 }
 
 type VerbContainer struct {
-	Data []Verb `json:"data"`
+	Data []Verb
 }
 
 type ConjugationContainer struct {
-	Data []Conjugation `json:"data"`
+	Data []Conjugation
 }

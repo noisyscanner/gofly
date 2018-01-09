@@ -6,46 +6,78 @@ import (
 	"strconv"
 	"os"
 	"time"
+	"database/sql"
 )
 
 func main() {
-	opts := getOpts()
+	err := errorWrapper(getOpts())
 
-	if opts.Code == "" {
-		fmt.Println("Please specify a language code.")
-		return
+	if err != nil {
+		fmt.Printf("ERROR: %s\n", err.Error())
 	}
+}
 
+func errorWrapper(opts *Options) error {
 	var (
 		configService ConfigService
 		langID int
 		output []byte
-		err error
 	)
 
 	if opts.Conf != "" {
 		configService = FileConfigService{File: opts.Conf}
 	}
 
-	service := &RealLanguageService{configService: configService}
+	dbs := DatabaseService{configService: configService}
 
-	if opts.Full {
-		langID, output, err = performFull(opts, service)
+	db, err := dbs.GetDb()
+
+	if err != nil {
+		return err
+	}
+
+	if opts.ImportFile != "" {
+		err = performImport(opts, db)
 	} else {
-		if opts.Since > 0 {
-			langID, output, err = performSince(opts, service)
+		if opts.Code == "" {
+			return fmt.Errorf("please specify a language code")
+		}
+
+		service := &Fetcher{Db: db}
+
+		if opts.Full {
+			langID, output, err = performFull(opts, service)
 		} else {
-			langID, output, err = performVerbs(opts, service)
+			if opts.Since > 0 {
+				langID, output, err = performSince(opts, service)
+			} else {
+				langID, output, err = performVerbs(opts, service)
+			}
+		}
+
+		if err == nil {
+			err = writeOut(opts, langID, output)
 		}
 	}
 
+	return err
+}
+
+func performImport(opts *Options, db *sql.DB) error {
+	data, err := ioutil.ReadFile(opts.ImportFile)
+
+	language := Language{}
+
 	if err == nil {
-		err = writeOut(opts, langID, output)
+		err = language.UnmarshalJSON(data)
 	}
 
-	if err != nil {
-		fmt.Printf("ERROR: %s\n", err.Error())
+	if err == nil {
+		inserter := &Inserter{Db: db}
+		err = inserter.InsertLanguage(language)
 	}
+
+	return err
 }
 
 func performFull(opts *Options, service LanguageService) (int, []byte, error) {

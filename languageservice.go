@@ -1,9 +1,6 @@
 package main
 
-import "database/sql"
-
 type LanguageService interface {
-	DB() *sql.DB
 	GetLang(code string) (Language, error)
 	GetLangIdFromCode(code string) (int, error)
 	GetVerbsSince(code string, since int) (int, VerbContainer, error)
