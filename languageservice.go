@@ -1,12 +1,18 @@
 package main
 
+import "database/sql"
+
 type LanguageService interface {
-	GetLang(code string) Language
+	DB() *sql.DB
+	GetLang(code string) (Language, error)
+	GetLangIdFromCode(code string) (int, error)
+	GetVerbsSince(code string, since int) (int, VerbContainer, error)
+	GetVerbsOnly(code string) (int, VerbContainer, error)
 }
 
 type FakeLanguageService struct{}
 
-func (s *FakeLanguageService) GetLang(code string) Language {
+func (s *FakeLanguageService) GetLang(code string) (Language, error) {
 
 	pronouns := []Pronoun{
 		{
@@ -92,5 +98,5 @@ func (s *FakeLanguageService) GetLang(code string) Language {
 		Pronouns: struct{ Data []Pronoun }{Data: pronouns},
 		Tenses: struct{ Data []Tense }{Data: tenses},
 		Verbs: struct{ Data []Verb }{Data: verbs},
-	}
+	}, nil
 }

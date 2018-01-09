@@ -21,10 +21,13 @@ func (s *RealLanguageService) DB() *sql.DB {
 			}
 			s.config = s.configService.GetConfig()
 		}
+
 		db, err := sql.Open(s.config.Driver, s.config.DBString())
+
 		if err != nil {
 			panic(err)
 		}
+
 		s.db = db
 	}
 	return s.db
@@ -44,8 +47,7 @@ func (s *RealLanguageService) GetLangIdFromCode(code string) (int, error) {
 	if rows.Next() {
 		err = rows.Scan(&id)
 	} else {
-		// No language found
-		err = fmt.Errorf("Language not found with code '%s'", code)
+		err = fmt.Errorf("language not found with code '%s'", code)
 	}
 
 	return id, err
@@ -109,15 +111,13 @@ GROUP BY l.id`, code)
 			return language, err
 		}
 	} else {
-		// Language was not found
-		return language, fmt.Errorf("Language not found with code '%s'", code)
+		return language, fmt.Errorf("language not found with code '%s'", code)
 	}
 
 	if err := rows.Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	// Fetch schema
 	tenses, err := s.getTenses(language.Id)
 	if err != nil {
 		return language, err
@@ -140,7 +140,7 @@ GROUP BY l.id`, code)
 }
 
 func (s *RealLanguageService) getTenses(langId int) ([]Tense, error) {
-	tenses := []Tense{}
+	var tenses []Tense
 
 	rows, err := s.DB().Query("SELECT id, identifier, displayName, `order` FROM tenses WHERE lang_id = ?", langId)
 	if err != nil {
@@ -162,7 +162,7 @@ func (s *RealLanguageService) getTenses(langId int) ([]Tense, error) {
 }
 
 func (s *RealLanguageService) getPronouns(langId int) ([]Pronoun, error) {
-	pronouns := []Pronoun{}
+	var pronouns []Pronoun
 
 	rows, err := s.DB().Query("SELECT id, identifier, displayName, `order`, reflexive FROM pronouns WHERE lang_id = ?", langId)
 	if err != nil {
@@ -189,7 +189,7 @@ func (s *RealLanguageService) getPronouns(langId int) ([]Pronoun, error) {
 }
 
 func (s *RealLanguageService) scanVerbs(rows *sql.Rows) ([]Verb, error) {
-	verbs := []Verb{}
+	var verbs []Verb
 
 	for rows.Next() {
 		verb := Verb{}
@@ -221,11 +221,6 @@ func (s *RealLanguageService) getVerbs(langId int) ([]Verb, error) {
 }
 
 func (s *RealLanguageService) getVerbsSince(langId int, since int) ([]Verb, error) {
-	//_, err := s.DB().Exec("SET time_zone='+00:00';")
-	//if err != nil {
-	//	return []Verb{}, err
-	//}
-
 	rows, err := s.DB().Query(
 		"SELECT v.id, v.infinitive, v.normalisedInfinitive, v.english, v.helperID, v.isHelper, v.isReflexive FROM verbs AS v, conjugations AS c " +
 			"WHERE v.lang_id = ? " +
@@ -242,7 +237,7 @@ func (s *RealLanguageService) getVerbsSince(langId int, since int) ([]Verb, erro
 }
 
 func (s *RealLanguageService) getConjugations(verbId int) ([]Conjugation, error) {
-	conjs := []Conjugation{}
+	var conjs []Conjugation
 
 	rows, err := s.DB().Query("SELECT conjugation, normalisedConjugation, pronoun_id, tense_id FROM conjugations WHERE verb_id = ?", verbId)
 	if err != nil {
@@ -263,11 +258,10 @@ func (s *RealLanguageService) getConjugations(verbId int) ([]Conjugation, error)
 	}
 
 	if len(conjs) == 0 {
-		// Conjugations were not found
-		return conjs, fmt.Errorf("No conjugations found for verb %d", verbId)
+		err = fmt.Errorf("no conjugations found for verb %d", verbId)
 	}
 
-	return conjs, nil
+	return conjs, err
 }
 
 func (s *RealLanguageService) getVerbsAndConjugations(langId int) ([]Verb, error) {
@@ -279,6 +273,7 @@ func (s *RealLanguageService) getVerbsAndConjugations(langId int) ([]Verb, error
 	for i := range verbs {
 		verb := verbs[i]
 		conjs, err := s.getConjugations(verb.Id)
+
 		if err != nil {
 			return []Verb{}, err
 		} else {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"flag"
 	"io/ioutil"
 	"strconv"
 	"os"
@@ -10,113 +9,152 @@ import (
 )
 
 func main() {
+	opts := getOpts()
 
-	code := flag.String("code", "", "The language to do")
-	conf := flag.String("conf", "", "DB config file")
-	since := flag.Int("since", 0, "Only get changes since the given UNIX timestamp")
-	fullPtr := flag.Bool("full", false, "Output the full language: verbs, tenses and pronouns")
-	gzipPtr := flag.Bool("gz", false, "GZIP the output")
-	outDir := flag.String("out", "", "Directory to write output to")
-
-	flag.Parse()
-
-	shouldWriteFile := len(*outDir) > 0
-	shouldGzip := *gzipPtr
-
-	if *code == "" {
+	if opts.Code == "" {
 		fmt.Println("Please specify a language code.")
-	} else {
-		var service RealLanguageService
-		if *conf != "" {
-			configService := FileConfigService{File: *conf}
-			service = RealLanguageService{configService: configService}
-		} else {
-			service = RealLanguageService{}
-		}
-
-
-		var (
-			output []byte
-			filename string
-			err error
-		)
-
-		if shouldWriteFile {
-			if *outDir != "." {
-				if _, err := os.Stat(*outDir); os.IsNotExist(err) {
-					os.Mkdir(*outDir, 0755)
-				}
-			}
-
-			filename = *outDir + "/"
-		}
-
-		if *fullPtr {
-			var lang Language
-			lang, err = service.GetLang(*code)
-			if err == nil {
-				output, err = lang.MarshalJSON()
-			}
-			if shouldWriteFile {
-				filename += strconv.Itoa(lang.Id) + *code + ".json.full"
-			}
-		} else {
-			var (
-				langID int
-				verbConf VerbContainer
-			)
-
-			if *since > 0 {
-				langID, verbConf, err = service.GetVerbsSince(*code, *since)
-			} else {
-				langID, verbConf, err = service.GetVerbsOnly(*code)
-			}
-
-			if err == nil {
-				output, err = verbConf.MarshalJSON()
-			}
-
-			if shouldWriteFile && *since > 0 {
-				filename += strconv.Itoa(langID) + *code + strconv.FormatInt(time.Now().Unix(), 10) + ".json"
-			} else {
-				filename += strconv.Itoa(langID) + *code + ".json"
-			}
-		}
-
-		if err == nil {
-			var zippedOutput []byte
-
-			if shouldGzip {
-				zippedOutput, err = zipBytes(output)
-			}
-			
-			if shouldWriteFile {
-				err = ioutil.WriteFile(filename, output, 0644)
-
-				if shouldGzip && len(zippedOutput) > 0 {
-					err = ioutil.WriteFile(filename + ".gz", zippedOutput, 0644)
-				}
-
-				if err == nil {
-					fmt.Println("SUCCESS: Written " + filename)
-					if shouldGzip {
-						fmt.Println("Written " + filename + ".gz")
-					}
-				}
-			} else {
-				if shouldGzip {
-					fmt.Println(string(zippedOutput))
-				} else {
-					fmt.Println(string(output))
-				}
-			}
-		} else {
-			fmt.Println(err)
-		}
-
-		if err != nil {
-			fmt.Printf("ERROR: %s", err.Error())
-		}
-
+		return
 	}
+
+	var (
+		configService ConfigService
+		langID int
+		output []byte
+		err error
+	)
+
+	if opts.Conf != "" {
+		configService = FileConfigService{File: opts.Conf}
+	}
+
+	service := &RealLanguageService{configService: configService}
+
+	if opts.Full {
+		langID, output, err = performFull(opts, service)
+	} else {
+		if opts.Since > 0 {
+			langID, output, err = performSince(opts, service)
+		} else {
+			langID, output, err = performVerbs(opts, service)
+		}
+	}
+
+	if err == nil {
+		err = writeOut(opts, langID, output)
+	}
+
+	if err != nil {
+		fmt.Printf("ERROR: %s\n", err.Error())
+	}
+}
+
+func performFull(opts *Options, service LanguageService) (int, []byte, error) {
+	var (
+		output []byte
+		err error
+	)
+
+	lang, err := service.GetLang(opts.Code)
+
+	if err == nil {
+		output, err = lang.MarshalJSON()
+	}
+
+	return lang.Id, output, err
+}
+
+func performVerbs(opts *Options, service LanguageService) (int, []byte, error) {
+	var (
+		langID int
+		verbConf VerbContainer
+		output []byte
+		err error
+	)
+
+	langID, verbConf, err = service.GetVerbsOnly(opts.Code)
+
+	if err == nil {
+		output, err = verbConf.MarshalJSON()
+	}
+
+	return langID, output, err
+}
+
+func performSince(opts *Options, service LanguageService) (int, []byte, error) {
+	var (
+		langID int
+		verbConf VerbContainer
+		output []byte
+		err error
+	)
+
+	langID, verbConf, err = service.GetVerbsSince(opts.Code, opts.Since)
+
+	if err == nil {
+		output, err = verbConf.MarshalJSON()
+	}
+
+	return langID, output, err
+}
+
+func getFileName(opts *Options, langId int) string {
+	if !opts.ShouldWriteFile() {
+		return ""
+	}
+
+	var prefix string
+
+	outDir := opts.OutDir
+	if outDir != "." {
+		if _, err := os.Stat(outDir); os.IsNotExist(err) {
+			os.Mkdir(outDir, 0755)
+		}
+	}
+
+	prefix = outDir + "/" + strconv.Itoa(langId) + opts.Code
+
+	if opts.Full {
+		return prefix + ".json.full"
+	}
+
+	if opts.Since > 0 {
+		return prefix + strconv.FormatInt(time.Now().Unix(), 10) + ".json"
+	}
+
+	return prefix + ".json"
+
+}
+
+func writeOut(opts *Options, langID int, output []byte) error {
+	filename := getFileName(opts, langID)
+	var (
+		zippedOutput []byte
+		err error
+	)
+
+	if opts.ShouldGzip {
+		zippedOutput, err = zipBytes(output)
+	}
+
+	if filename != "" {
+		err = ioutil.WriteFile(filename, output, 0644)
+		if err == nil {
+			fmt.Println("SUCCESS: Written " + filename)
+		}
+
+		if opts.ShouldGzip && len(zippedOutput) > 0 {
+			err = ioutil.WriteFile(filename + ".gz", zippedOutput, 0644)
+			if err == nil {
+				fmt.Println("Written " + filename + ".gz")
+			}
+		}
+	} else {
+		if opts.ShouldGzip {
+			fmt.Println(string(zippedOutput))
+		} else {
+			fmt.Println(string(output))
+		}
+	}
+
+	return err
 }
