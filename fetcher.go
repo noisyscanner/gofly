@@ -59,8 +59,8 @@ func (s *Fetcher) GetVerbsOnly(code string) (int, VerbContainer, error) {
 	return id, VerbContainer{Data: verbs}, nil
 }
 
-func (s *Fetcher) GetLang(code string) (Language, error) {
-	language := Language{}
+func (s *Fetcher) GetLang(code string) (*Language, error) {
+	language := &Language{}
 
 	rows, err := s.Db.Query(`
 SELECT l.id, l.lang, l.` + "`code`" + `, l.locale, UNIX_TIMESTAMP(max(v.updated_at)) version, UNIX_TIMESTAMP(GREATEST(max(t.updated_at), max(p.updated_at))) schemaVersion, hasReflexives, hasHelpers

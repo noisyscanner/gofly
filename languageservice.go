@@ -1,7 +1,8 @@
 package main
 
 type LanguageService interface {
-	GetLang(code string) (Language, error)
+	//GetLangIds() ([]int, error)
+	GetLang(code string) (*Language, error)
 	GetLangIdFromCode(code string) (int, error)
 	GetVerbsSince(code string, since int) (int, VerbContainer, error)
 	GetVerbsOnly(code string) (int, VerbContainer, error)

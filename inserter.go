@@ -9,7 +9,25 @@ type Inserter struct {
 	Db *sql.DB
 }
 
-func (s *Inserter) InsertLanguage(lang Language) error {
+func (s *Inserter) GetLangIds() (ids []int, err error) {
+	rows, err := s.Db.Query("SELECT id FROM languages")
+	defer rows.Close()
+	if err != nil {
+		return
+	}
+
+	for rows.Next() {
+		var id int
+		err = rows.Scan(&id)
+		if err != nil {
+			return
+		}
+		ids = append(ids)
+	}
+	return
+}
+
+func (s *Inserter) InsertLanguage(lang *Language) error {
 	rows, err := s.Db.Query("SELECT COUNT(*) FROM languages WHERE id = ? OR code = ?", lang.Id, lang.Code)
 	defer rows.Close()
 	if err != nil {

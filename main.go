@@ -66,10 +66,14 @@ func errorWrapper(opts *Options) error {
 func performImport(opts *Options, db *sql.DB) error {
 	data, err := ioutil.ReadFile(opts.ImportFile)
 
-	language := Language{}
+	language := &Language{}
 
 	if err == nil {
 		err = language.UnmarshalJSON(data)
+	}
+
+	if language.Id == 0 || language.Code == "" {
+		err = fmt.Errorf("malformed language data")
 	}
 
 	if err == nil {
