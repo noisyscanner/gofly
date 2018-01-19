@@ -171,16 +171,20 @@ func (s *Fetcher) scanVerbs(rows *sql.Rows) ([]Verb, error) {
 
 	for rows.Next() {
 		verb := Verb{}
+		var helperId sql.NullInt64
 		if err := rows.Scan(
 			&verb.Id,
 			&verb.Infinitive,
 			&verb.NormalisedInfinitive,
 			&verb.English,
-			&verb.HelperID,
+			&helperId,
 			&verb.IsHelper,
 			&verb.IsReflexive); err != nil {
 			return []Verb{}, err
 		} else {
+			if helperId.Valid {
+				verb.HelperID = int(helperId.Int64)
+			}
 			verbs = append(verbs, verb)
 		}
 	}

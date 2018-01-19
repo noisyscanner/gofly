@@ -41,7 +41,7 @@ type Verb struct {
 	Infinitive			 string	`json:"i"`
 	NormalisedInfinitive string	`json:"ni,omitempty"`
 	English 		     string `json:"e"`
-	HelperID 		     int    `json:"hid"`
+	HelperID 		     int    `json:"hid,omitempty"`
 	IsHelper 		     bool   `json:"ih"`
 	IsReflexive 		 bool   `json:"ir"`
 	Conjugations 		 ConjugationContainer `json:"conjugations"`
