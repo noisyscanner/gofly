@@ -191,12 +191,14 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly1(out *jwriter.Writer, in Verb
 	first = false
 	out.RawString("\"e\":")
 	out.String(string(in.English))
-	if !first {
-		out.RawByte(',')
+	if in.HelperID != 0 {
+		if !first {
+			out.RawByte(',')
+		}
+		first = false
+		out.RawString("\"hid\":")
+		out.Int(int(in.HelperID))
 	}
-	first = false
-	out.RawString("\"hid\":")
-	out.Int(int(in.HelperID))
 	if !first {
 		out.RawByte(',')
 	}
@@ -949,12 +951,14 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGofly6(out *jwriter.Writer, in Conj
 	first = false
 	out.RawString("\"c\":")
 	out.String(string(in.Conjugation))
-	if !first {
-		out.RawByte(',')
+	if in.NormalisedConjugation != "" {
+		if !first {
+			out.RawByte(',')
+		}
+		first = false
+		out.RawString("\"nc\":")
+		out.String(string(in.NormalisedConjugation))
 	}
-	first = false
-	out.RawString("\"nc\":")
-	out.String(string(in.NormalisedConjugation))
 	if !first {
 		out.RawByte(',')
 	}

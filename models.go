@@ -49,7 +49,7 @@ type Verb struct {
 
 type Conjugation struct {
 	Conjugation 		    string	`json:"c"`
-	NormalisedConjugation	string	`json:"nc"`
+	NormalisedConjugation	string	`json:"nc,omitempty"`
 	TenseID 			    int		`json:"tid"`
 	PronounID 			    int		`json:"pid"`
 }
