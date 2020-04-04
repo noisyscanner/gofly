@@ -2,3 +2,4 @@
 *.json
 config
 .DS_Store
+vendor/
