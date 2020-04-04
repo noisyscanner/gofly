@@ -2,20 +2,34 @@
 
 
 [[projects]]
+  digest = "1:a67f9275b42e8bb95ba38f705062175ef65538bcdc107e0771763e6cde80c3c3"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
+  pruneopts = ""
   revision = "17ef3dd9d98b69acec3e85878995ada9533a9370"
   version = "v1.5.0"
 
 [[projects]]
+  digest = "1:31c62b5b23e16ebb8cb6dab1e39dd331b8d397a7973f5c91e46e6328abe93fa4"
   name = "github.com/mailru/easyjson"
-  packages = [".","buffer","jlexer","jwriter"]
+  packages = [
+    ".",
+    "buffer",
+    "jlexer",
+    "jwriter",
+  ]
+  pruneopts = ""
   revision = "8edcc4e51f39ddbd3505a3386aff3f435a7fd028"
   version = "v0.7.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c32de7a648738425009c517b308cd44084f2c363796b2872235107b6e02545c6"
+  input-imports = [
+    "github.com/go-sql-driver/mysql",
+    "github.com/mailru/easyjson",
+    "github.com/mailru/easyjson/jlexer",
+    "github.com/mailru/easyjson/jwriter",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
