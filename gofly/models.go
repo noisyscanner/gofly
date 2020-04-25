@@ -1,4 +1,4 @@
-package main
+package gofly
 
 type Language struct {
 	Id int

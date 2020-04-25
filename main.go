@@ -1,12 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"io/ioutil"
-	"strconv"
 	"os"
+	"strconv"
 	"time"
-	"database/sql"
+  gofly "bradreed.co.uk/iverbs/gofly/gofly"
 )
 
 func main() {
@@ -19,16 +20,16 @@ func main() {
 
 func errorWrapper(opts *Options) error {
 	var (
-		configService ConfigService
-		langID int
-		output []byte
+		configService gofly.ConfigService
+		langID        int
+		output        []byte
 	)
 
 	if opts.Conf != "" {
-		configService = FileConfigService{File: opts.Conf}
+		configService = gofly.FileConfigService{File: opts.Conf}
 	}
 
-	dbs := DatabaseService{configService: configService}
+	dbs := gofly.DatabaseService{ConfigService: configService}
 
 	db, err := dbs.GetDb()
 
@@ -43,7 +44,7 @@ func errorWrapper(opts *Options) error {
 			return fmt.Errorf("please specify a language code")
 		}
 
-		service := &Fetcher{Db: db}
+		service := &gofly.Fetcher{Db: db}
 
 		if opts.Full {
 			langID, output, err = performFull(opts, service)
@@ -66,7 +67,7 @@ func errorWrapper(opts *Options) error {
 func performImport(opts *Options, db *sql.DB) error {
 	data, err := ioutil.ReadFile(opts.ImportFile)
 
-	language := &Language{}
+	language := &gofly.Language{}
 
 	if err == nil {
 		err = language.UnmarshalJSON(data)
@@ -77,17 +78,17 @@ func performImport(opts *Options, db *sql.DB) error {
 	}
 
 	if err == nil {
-		inserter := &Inserter{Db: db}
+		inserter := &gofly.Inserter{Db: db}
 		err = inserter.InsertLanguage(language)
 	}
 
 	return err
 }
 
-func performFull(opts *Options, service LanguageService) (int, []byte, error) {
+func performFull(opts *Options, service gofly.LanguageService) (int, []byte, error) {
 	var (
 		output []byte
-		err error
+		err    error
 	)
 
 	lang, err := service.GetLang(opts.Code)
@@ -99,12 +100,12 @@ func performFull(opts *Options, service LanguageService) (int, []byte, error) {
 	return lang.Id, output, err
 }
 
-func performVerbs(opts *Options, service LanguageService) (int, []byte, error) {
+func performVerbs(opts *Options, service gofly.LanguageService) (int, []byte, error) {
 	var (
-		langID int
-		verbConf VerbContainer
-		output []byte
-		err error
+		langID   int
+		verbConf gofly.VerbContainer
+		output   []byte
+		err      error
 	)
 
 	langID, verbConf, err = service.GetVerbsOnly(opts.Code)
@@ -116,12 +117,12 @@ func performVerbs(opts *Options, service LanguageService) (int, []byte, error) {
 	return langID, output, err
 }
 
-func performSince(opts *Options, service LanguageService) (int, []byte, error) {
+func performSince(opts *Options, service gofly.LanguageService) (int, []byte, error) {
 	var (
-		langID int
-		verbConf VerbContainer
-		output []byte
-		err error
+		langID   int
+		verbConf gofly.VerbContainer
+		output   []byte
+		err      error
 	)
 
 	langID, verbConf, err = service.GetVerbsSince(opts.Code, opts.Since)
@@ -165,11 +166,11 @@ func writeOut(opts *Options, langID int, output []byte) error {
 	filename := getFileName(opts, langID)
 	var (
 		zippedOutput []byte
-		err error
+		err          error
 	)
 
 	if opts.ShouldGzip {
-		zippedOutput, err = zipBytes(output)
+		zippedOutput, err = gofly.ZipBytes(output)
 	}
 
 	if filename != "" {
@@ -179,7 +180,7 @@ func writeOut(opts *Options, langID int, output []byte) error {
 		}
 
 		if opts.ShouldGzip && len(zippedOutput) > 0 {
-			err = ioutil.WriteFile(filename + ".gz", zippedOutput, 0644)
+			err = ioutil.WriteFile(filename+".gz", zippedOutput, 0644)
 			if err == nil {
 				fmt.Println("Written " + filename + ".gz")
 			}

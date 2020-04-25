@@ -1,7 +1,8 @@
-package main
+package gofly
 
 type LanguageService interface {
 	//GetLangIds() ([]int, error)
+  GetLangs() ([]*Language, error)
 	GetLang(code string) (*Language, error)
 	GetLangIdFromCode(code string) (int, error)
 	GetVerbsSince(code string, since int) (int, VerbContainer, error)

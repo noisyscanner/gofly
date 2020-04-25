@@ -1,4 +1,4 @@
-package main
+package gofly
 
 import (
 	"database/sql"
@@ -57,6 +57,40 @@ func (s *Fetcher) GetVerbsOnly(code string) (int, VerbContainer, error) {
 	}
 
 	return id, VerbContainer{Data: verbs}, nil
+}
+
+const SELECT_LANG = "SELECT l.id, l.lang, l.`code`, l.locale, UNIX_TIMESTAMP(max(v.updated_at)) version, UNIX_TIMESTAMP(GREATEST(max(t.updated_at), max(p.updated_at))) schemaVersion, hasReflexives, hasHelpers FROM languages l, verbs v, tenses t, pronouns p"
+
+func scanLang(lang *Language, rows *sql.Rows) error {
+  return rows.Scan(
+			&lang.Id,
+			&lang.Lang,
+			&lang.Code,
+			&lang.Locale,
+			&lang.Version,
+			&lang.SchemaVersion,
+			&lang.HasReflexives,
+			&lang.HasHelpers,
+    )
+}
+
+func (s *Fetcher) GetLangs() (langs []*Language, err error) {
+  rows, err := s.Db.Query(SELECT_LANG)
+  if err != nil {
+    return
+  }
+
+  defer rows.Close()
+
+  for rows.Next() {
+    language := &Language{}
+    if err = scanLang(language, rows); err != nil {
+      return
+    }
+    langs = append(langs, language)
+  }
+
+  return
 }
 
 func (s *Fetcher) GetLang(code string) (*Language, error) {

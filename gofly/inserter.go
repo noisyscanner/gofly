@@ -1,4 +1,4 @@
-package main
+package gofly
 
 import (
 	"database/sql"

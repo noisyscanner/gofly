@@ -1,11 +1,11 @@
-package main
+package gofly
 
 import (
 	"bytes"
 	"compress/gzip"
 )
 
-func zipBytes(bs []byte) ([]byte, error) {
+func ZipBytes(bs []byte) ([]byte, error) {
 	var b bytes.Buffer
 	gz := gzip.NewWriter(&b)
 

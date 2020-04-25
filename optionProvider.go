@@ -3,11 +3,11 @@ package main
 import "flag"
 
 type Options struct {
-	Code string
-	Conf string
-	Since int
-	Full bool
-	OutDir string
+	Code       string
+	Conf       string
+	Since      int
+	Full       bool
+	OutDir     string
 	ShouldGzip bool
 
 	ImportFile string
@@ -30,11 +30,11 @@ func getOpts() *Options {
 	flag.Parse()
 
 	return &Options{
-		Code: *code,
-		Conf: *conf,
-		Since: *since,
-		Full: *fullPtr,
-		OutDir: *outDir,
+		Code:       *code,
+		Conf:       *conf,
+		Since:      *since,
+		Full:       *fullPtr,
+		OutDir:     *outDir,
 		ShouldGzip: *gzipPtr,
 		ImportFile: *importFile,
 	}
