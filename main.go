@@ -1,13 +1,13 @@
 package main
 
 import (
+	gofly "bradreed.co.uk/iverbs/gofly/gofly"
 	"database/sql"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"strconv"
 	"time"
-  gofly "bradreed.co.uk/iverbs/gofly/gofly"
 )
 
 func main() {
@@ -148,7 +148,7 @@ func getFileName(opts *Options, langId int) string {
 		}
 	}
 
-	prefix = outDir + "/" + strconv.Itoa(langId) + opts.Code
+	prefix = outDir + "/" + opts.Code
 
 	if opts.Full {
 		return prefix + ".json.full"

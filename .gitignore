@@ -2,4 +2,6 @@
 *.json
 config
 .DS_Store
+go.sum
 vendor/
+langcache/
