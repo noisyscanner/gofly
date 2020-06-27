@@ -1,9 +1,9 @@
 package main
 
 import (
-	gofly "bradreed.co.uk/iverbs/gofly/gofly"
 	"database/sql"
 	"fmt"
+	gofly "github.com/noisyscanner/gofly"
 	"io/ioutil"
 	"os"
 	"strconv"

@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly(in *jlexer.Lexer, out *VerbContainer) {
+func easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly(in *jlexer.Lexer, out *VerbContainer) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -69,7 +69,7 @@ func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly(in *jlexer.Lexer, out *V
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly(out *jwriter.Writer, in VerbContainer) {
+func easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly(out *jwriter.Writer, in VerbContainer) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -95,27 +95,27 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly(out *jwriter.Writer, in 
 // MarshalJSON supports json.Marshaler interface
 func (v VerbContainer) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly(&w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v VerbContainer) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly(w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *VerbContainer) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly(&r, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *VerbContainer) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly(l, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly(l, v)
 }
-func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly1(in *jlexer.Lexer, out *Verb) {
+func easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly1(in *jlexer.Lexer, out *Verb) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -160,7 +160,7 @@ func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly1(in *jlexer.Lexer, out *
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly1(out *jwriter.Writer, in Verb) {
+func easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly1(out *jwriter.Writer, in Verb) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -210,27 +210,27 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly1(out *jwriter.Writer, in
 // MarshalJSON supports json.Marshaler interface
 func (v Verb) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly1(&w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Verb) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly1(w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Verb) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly1(&r, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Verb) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly1(l, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly1(l, v)
 }
-func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly2(in *jlexer.Lexer, out *Tense) {
+func easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly2(in *jlexer.Lexer, out *Tense) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -267,7 +267,7 @@ func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly2(in *jlexer.Lexer, out *
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly2(out *jwriter.Writer, in Tense) {
+func easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly2(out *jwriter.Writer, in Tense) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -297,27 +297,27 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly2(out *jwriter.Writer, in
 // MarshalJSON supports json.Marshaler interface
 func (v Tense) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly2(&w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly2(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Tense) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly2(w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly2(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Tense) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly2(&r, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly2(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Tense) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly2(l, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly2(l, v)
 }
-func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly3(in *jlexer.Lexer, out *Pronoun) {
+func easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly3(in *jlexer.Lexer, out *Pronoun) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -356,7 +356,7 @@ func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly3(in *jlexer.Lexer, out *
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly3(out *jwriter.Writer, in Pronoun) {
+func easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly3(out *jwriter.Writer, in Pronoun) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -391,27 +391,27 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly3(out *jwriter.Writer, in
 // MarshalJSON supports json.Marshaler interface
 func (v Pronoun) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly3(&w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly3(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Pronoun) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly3(w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly3(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Pronoun) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly3(&r, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly3(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Pronoun) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly3(l, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly3(l, v)
 }
-func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly4(in *jlexer.Lexer, out *Language) {
+func easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly4(in *jlexer.Lexer, out *Language) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -462,7 +462,7 @@ func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly4(in *jlexer.Lexer, out *
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly4(out *jwriter.Writer, in Language) {
+func easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly4(out *jwriter.Writer, in Language) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -527,25 +527,25 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly4(out *jwriter.Writer, in
 // MarshalJSON supports json.Marshaler interface
 func (v Language) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly4(&w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly4(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Language) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly4(w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly4(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Language) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly4(&r, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly4(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Language) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly4(l, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly4(l, v)
 }
 func easyjsonD2b7633eDecode2(in *jlexer.Lexer, out *struct{ Data []Verb }) {
 	isTopLevel := in.IsStart()
@@ -769,7 +769,7 @@ func easyjsonD2b7633eEncode(out *jwriter.Writer, in struct{ Data []Tense }) {
 	}
 	out.RawByte('}')
 }
-func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly5(in *jlexer.Lexer, out *ConjugationContainer) {
+func easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly5(in *jlexer.Lexer, out *ConjugationContainer) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -821,7 +821,7 @@ func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly5(in *jlexer.Lexer, out *
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly5(out *jwriter.Writer, in ConjugationContainer) {
+func easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly5(out *jwriter.Writer, in ConjugationContainer) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -847,27 +847,27 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly5(out *jwriter.Writer, in
 // MarshalJSON supports json.Marshaler interface
 func (v ConjugationContainer) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly5(&w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly5(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v ConjugationContainer) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly5(w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly5(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *ConjugationContainer) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly5(&r, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly5(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *ConjugationContainer) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly5(l, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly5(l, v)
 }
-func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly6(in *jlexer.Lexer, out *Conjugation) {
+func easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly6(in *jlexer.Lexer, out *Conjugation) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -904,7 +904,7 @@ func easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly6(in *jlexer.Lexer, out *
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly6(out *jwriter.Writer, in Conjugation) {
+func easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly6(out *jwriter.Writer, in Conjugation) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -934,23 +934,23 @@ func easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly6(out *jwriter.Writer, in
 // MarshalJSON supports json.Marshaler interface
 func (v Conjugation) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly6(&w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly6(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Conjugation) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeBradreedCoUkIverbsGoflyGofly6(w, v)
+	easyjsonD2b7633eEncodeGithubComNoisyscannerGoflyGofly6(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Conjugation) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly6(&r, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly6(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Conjugation) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeBradreedCoUkIverbsGoflyGofly6(l, v)
+	easyjsonD2b7633eDecodeGithubComNoisyscannerGoflyGofly6(l, v)
 }
