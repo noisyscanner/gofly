@@ -1,7 +1,8 @@
 package migrate
 
 import (
-	_ "github.com/golang-migrate/migrate"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/golang-migrate/migrate"
 	"github.com/noisyscanner/gofly/gofly"
 )
 
