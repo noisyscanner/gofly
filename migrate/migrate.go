@@ -20,7 +20,9 @@ func getMigrationsPath() string {
 
 func getMigrate(configService gofly.ConfigService) (*migrate.Migrate, error) {
 	config := configService.GetConfig()
-	return migrate.New(fmt.Sprintf("file://%s", getMigrationsPath()), config.DBString())
+	migrationsPath := fmt.Sprintf("file://%s", getMigrationsPath())
+	mysqlDbStr := fmt.Sprintf("mysql://%s", config.DBString())
+	return migrate.New(migrationsPath, mysqlDbStr)
 }
 
 func Up(configService gofly.ConfigService) error {
