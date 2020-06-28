@@ -1,0 +1,1 @@
+DROP DATABASE ivapi_1;
