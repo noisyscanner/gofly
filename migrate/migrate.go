@@ -8,7 +8,7 @@ import (
 
 func getMigrate(configService gofly.ConfigService) (*migrate.Migrate, error) {
 	config := configService.GetConfig()
-	return migrate.New("file://migrations/", config.DBString())
+	return migrate.New("file:///migrations/", config.DBString())
 }
 
 func Up(configService gofly.ConfigService) error {
