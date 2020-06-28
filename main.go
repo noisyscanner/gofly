@@ -3,11 +3,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	gofly "github.com/noisyscanner/gofly"
 	"io/ioutil"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/noisyscanner/gofly/gofly"
 )
 
 func main() {
