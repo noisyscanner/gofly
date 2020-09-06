@@ -40,5 +40,5 @@ func Down(configService gofly.ConfigService) error {
 		return err
 	}
 
-	return m.Up()
+	return m.Down()
 }
