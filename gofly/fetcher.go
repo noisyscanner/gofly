@@ -2,12 +2,12 @@ package gofly
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
-	"fmt"
 )
 
-type Fetcher struct{
+type Fetcher struct {
 	Db *sql.DB
 }
 
@@ -59,47 +59,61 @@ func (s *Fetcher) GetVerbsOnly(code string) (int, VerbContainer, error) {
 	return id, VerbContainer{Data: verbs}, nil
 }
 
-const SELECT_LANG = "SELECT l.id, l.lang, l.`code`, l.locale, UNIX_TIMESTAMP(max(v.updated_at)) version, UNIX_TIMESTAMP(GREATEST(max(t.updated_at), max(p.updated_at))) schemaVersion, hasReflexives, hasHelpers FROM languages l, verbs v, tenses t, pronouns p"
+const SELECT_LANG = `
+SELECT
+  l.id,
+  l.lang,
+  l.` + "`code`" + `,
+  l.locale,
+  COALESCE(UNIX_TIMESTAMP(max(v.updated_at)), 0) version,
+  COALESCE(UNIX_TIMESTAMP(GREATEST(max(t.updated_at), max(p.updated_at))), 0) schemaVersion,
+  hasReflexives,
+  hasHelpers
+FROM languages l
+LEFT JOIN verbs v ON l.id = v.lang_id
+LEFT JOIN tenses t ON l.id = t.lang_id
+LEFT JOIN pronouns p ON l.id = p.lang_id
+`
 
 func scanLang(lang *Language, rows *sql.Rows) error {
-  return rows.Scan(
-			&lang.Id,
-			&lang.Lang,
-			&lang.Code,
-			&lang.Locale,
-			&lang.Version,
-			&lang.SchemaVersion,
-			&lang.HasReflexives,
-			&lang.HasHelpers,
-    )
+	return rows.Scan(
+		&lang.Id,
+		&lang.Lang,
+		&lang.Code,
+		&lang.Locale,
+		&lang.Version,
+		&lang.SchemaVersion,
+		&lang.HasReflexives,
+		&lang.HasHelpers,
+	)
 }
 
 func (s *Fetcher) GetLangs() (langs []*Language, err error) {
-  rows, err := s.Db.Query(SELECT_LANG)
-  if err != nil {
-    return
-  }
+	rows, err := s.Db.Query(SELECT_LANG)
+	if err != nil {
+		return
+	}
 
-  defer rows.Close()
+	defer rows.Close()
 
-  for rows.Next() {
-    language := &Language{}
-    if err = scanLang(language, rows); err != nil {
-      return
-    }
-    langs = append(langs, language)
-  }
+	for rows.Next() {
+		language := &Language{}
+		if err = scanLang(language, rows); err != nil {
+			return
+		}
+		langs = append(langs, language)
+	}
 
-  return
+	return
 }
 
 func (s *Fetcher) GetLang(code string) (*Language, error) {
 	language := &Language{}
 
 	rows, err := s.Db.Query(`
-SELECT l.id, l.lang, l.` + "`code`" + `, l.locale, UNIX_TIMESTAMP(max(v.updated_at)) version, UNIX_TIMESTAMP(GREATEST(max(t.updated_at), max(p.updated_at))) schemaVersion, hasReflexives, hasHelpers
+SELECT l.id, l.lang, l.`+"`code`"+`, l.locale, UNIX_TIMESTAMP(max(v.updated_at)) version, UNIX_TIMESTAMP(GREATEST(max(t.updated_at), max(p.updated_at))) schemaVersion, hasReflexives, hasHelpers
 FROM languages l, verbs v, tenses t, pronouns p
-WHERE ` + "`code`" + ` = ?
+WHERE `+"`code`"+` = ?
       AND v.lang_id = l.id
       AND t.lang_id = l.id
       AND p.lang_id = l.id
@@ -134,19 +148,19 @@ GROUP BY l.id`, code)
 	if err != nil {
 		return language, err
 	}
-	language.Tenses = struct{Data []Tense}{Data: tenses}
+	language.Tenses = struct{ Data []Tense }{Data: tenses}
 
 	pronouns, err := s.getPronouns(language.Id)
 	if err != nil {
 		return language, err
 	}
-	language.Pronouns = struct{Data []Pronoun}{Data: pronouns}
+	language.Pronouns = struct{ Data []Pronoun }{Data: pronouns}
 
 	verbs, err := s.getVerbsAndConjugations(language.Id)
 	if err != nil {
 		return language, err
 	}
-	language.Verbs = struct{Data []Verb}{Data: verbs}
+	language.Verbs = struct{ Data []Verb }{Data: verbs}
 
 	return language, nil
 }
@@ -238,9 +252,9 @@ func (s *Fetcher) getVerbs(langId int) ([]Verb, error) {
 
 func (s *Fetcher) getVerbsSince(langId int, since int) ([]Verb, error) {
 	rows, err := s.Db.Query(
-		"SELECT v.id, v.infinitive, v.normalisedInfinitive, v.english, v.helperID, v.isHelper, v.isReflexive FROM verbs AS v, conjugations AS c " +
-			"WHERE v.lang_id = ? " +
-			"AND c.verb_id = v.id " +
+		"SELECT v.id, v.infinitive, v.normalisedInfinitive, v.english, v.helperID, v.isHelper, v.isReflexive FROM verbs AS v, conjugations AS c "+
+			"WHERE v.lang_id = ? "+
+			"AND c.verb_id = v.id "+
 			"AND GREATEST(UNIX_TIMESTAMP(v.updated_at), UNIX_TIMESTAMP(c.updated_at)) > ? ",
 		langId,
 		since)
@@ -283,7 +297,7 @@ func (s *Fetcher) getConjugations(verbId int) ([]Conjugation, error) {
 func (s *Fetcher) getVerbsAndConjugations(langId int) ([]Verb, error) {
 	verbs, err := s.getVerbs(langId)
 	if err != nil {
-		return []Verb{},err
+		return []Verb{}, err
 	}
 
 	for i := range verbs {
@@ -302,7 +316,7 @@ func (s *Fetcher) getVerbsAndConjugations(langId int) ([]Verb, error) {
 func (s *Fetcher) getVerbsAndConjugationsSince(langId int, since int) ([]Verb, error) {
 	verbs, err := s.getVerbsSince(langId, since)
 	if err != nil {
-		return []Verb{},err
+		return []Verb{}, err
 	}
 
 	for i, verb := range verbs {
