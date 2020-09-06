@@ -1,10 +1,3 @@
--- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Server version:               10.4.12-MariaDB - mariadb.org binary distribution
--- Server OS:                    Win64
--- HeidiSQL Version:             10.2.0.5599
--- --------------------------------------------------------
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET NAMES utf8 */;
 /*!50503 SET NAMES utf8mb4 */;
@@ -57,25 +50,6 @@ CREATE TABLE IF NOT EXISTS `languages` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table ivapi.migrations
-CREATE TABLE IF NOT EXISTS `migrations` (
-  `migration` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `batch` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- Data exporting was unselected.
-
--- Dumping structure for table ivapi.password_resets
-CREATE TABLE IF NOT EXISTS `password_resets` (
-  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  KEY `password_resets_email_index` (`email`),
-  KEY `password_resets_token_index` (`token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- Data exporting was unselected.
-
 -- Dumping structure for table ivapi.pronouns
 CREATE TABLE IF NOT EXISTS `pronouns` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -107,23 +81,6 @@ CREATE TABLE IF NOT EXISTS `tenses` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table ivapi.users
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `isAdmin` tinyint(1) NOT NULL,
-  `api_token` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- Data exporting was unselected.
-
 -- Dumping structure for table ivapi.verbs
 CREATE TABLE IF NOT EXISTS `verbs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -133,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `verbs` (
   `english` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `helperID` int(10) unsigned DEFAULT 0,
   `isHelper` tinyint(1) NOT NULL DEFAULT 0,
-  `updated_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT current_timestamp(),
   `isReflexive` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `verbs_lang_id_index` (`lang_id`),
