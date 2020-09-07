@@ -229,12 +229,17 @@ func (s *Fetcher) scanVerbs(rows *sql.Rows) ([]Verb, error) {
 			&verb.IsHelper,
 			&verb.IsReflexive); err != nil {
 			return []Verb{}, err
-		} else {
-			if helperId.Valid {
-				verb.HelperID = int(helperId.Int64)
-			}
-			verbs = append(verbs, verb)
 		}
+
+		if verb.NormalisedInfinitive == verb.Infinitive {
+			verb.NormalisedInfinitive = ""
+		}
+
+		if helperId.Valid {
+			verb.HelperID = int(helperId.Int64)
+		}
+
+		verbs = append(verbs, verb)
 	}
 
 	return verbs, nil
@@ -282,9 +287,13 @@ func (s *Fetcher) getConjugations(verbId int) ([]Conjugation, error) {
 			&conj.PronounID,
 			&conj.TenseID); err != nil {
 			return []Conjugation{}, err
-		} else {
-			conjs = append(conjs, conj)
 		}
+
+		if conj.NormalisedConjugation == conj.Conjugation {
+			conj.NormalisedConjugation = ""
+		}
+
+		conjs = append(conjs, conj)
 	}
 
 	if len(conjs) == 0 {
