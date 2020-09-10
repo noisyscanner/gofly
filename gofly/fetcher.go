@@ -73,6 +73,7 @@ FROM languages l
 LEFT JOIN verbs v ON l.id = v.lang_id
 LEFT JOIN tenses t ON l.id = t.lang_id
 LEFT JOIN pronouns p ON l.id = p.lang_id
+GROUP BY l.id
 `
 
 func scanLang(lang *Language, rows *sql.Rows) error {
